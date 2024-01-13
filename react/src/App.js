@@ -7,8 +7,8 @@ import React from "react";
 
 // import './App.css'
 
-import PasswordGenerator from "./project1/PasswordGen";
- 
+// import PasswordGenerator from "./project1/PasswordGen";
+import Form from "./components/FormValidation/Form";
 
 function App() {
   // const contextValue="Hello Context"
@@ -17,17 +17,18 @@ function App() {
       <h1>React Practice</h1>
       {/* <Hook /> */}
       {/* <MyComponent /> */}
-   
+
       {/* <Context>
         <div>
           <Header/>
           <Content />
         </div>
       </Context> */}
-      
-      <PasswordGenerator />
-     
-      </div>
+
+      {/* <PasswordGenerator /> */}
+
+      <Form />
+    </div>
   );
 }
 
