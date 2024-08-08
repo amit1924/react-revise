@@ -1,0 +1,153 @@
+Assume we have a 4-digit OTP input (length=4), and we are currently typing in the first input box. We type the digit 5 into the first input box.
+
+Step-by-Step Explanation
+1. Initial State
+otp: ["", "", "", ""] (initial state, all inputs are empty)
+inputsRef: This will hold references to the input elements.
+2. Typing in the First Input Box
+You type 5 in the first input box.
+This triggers the handleChange function.
+
+const handleChange = (element, index) => {
+  const value = element.value;
+
+  // Update the OTP state
+  const newOtp = [...otp];
+  newOtp[index] = value;
+  setOtp(newOtp);
+
+  // Move to the next input if value is entered
+  if (value && index < length - 1) {
+    inputsRef.current[index + 1].focus();
+  }
+};
+element: The first input element (where you typed 5).
+index: 0 (index of the first input box).
+3. Extract the Value
+
+const value = element.value;
+value: "5" (the value you just typed).
+4. Update the OTP State
+
+const newOtp = [...otp];
+newOtp: Creates a copy of the current otp state. Initially, newOtp is ["", "", "", ""].
+
+newOtp[index] = value;
+newOtp[0] = value: Updates the value at index 0 to "5".
+newOtp: Now becomes ["5", "", "", ""].
+
+setOtp(newOtp);
+setOtp(newOtp): Updates the otp state with the new value ["5", "", "", ""].
+5. Move to the Next Input
+
+if (value && index < length - 1) {
+  inputsRef.current[index + 1].focus();
+}
+value: "5" (truthy, so this part of the condition is true).
+index < length - 1: 0 < 3 (true, since length is 4).
+Since both conditions are true:
+
+
+inputsRef.current[index + 1].focus();
+inputsRef.current[index + 1]: This is a reference to the second input box.
+.focus(): This moves the focus to the second input box.
+Summary of Actions
+Update the OTP State:
+
+Create a copy of the current otp state.
+Update the specific index (0) with the new value ("5").
+Update the state to ["5", "", "", ""].
+Move to the Next Input:
+
+If the current input has a value ("5") and it's not the last input box, move the focus to the next input box.
+Next Steps
+If you then type 3 in the second input box, the same process repeats:
+
+otp becomes ["5", "3", "", ""].
+Focus moves to the third input box.
+And so on, until all input boxes are filled.
+
+Visual Example
+Initial State:
+css
+
+[   ] [   ] [   ] [   ]
+After Typing 5:
+scss
+
+[ 5 ] [   ] [   ] [   ]
+     ^ (focus moves here)
+After Typing 3:
+scss
+
+[ 5 ] [ 3 ] [   ] [   ]
+          ^ (focus moves here)
+Each time you type a digit, the focus automatically moves to the next input box, and the otp state updates accordingly. This process continues until all input boxes are filled.
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Purpose of ref
+
+The ref attribute in React is used to get a reference to a DOM element or a React component instance. It allows you to interact directly with the DOM.
+Using useRef
+
+
+const inputsRef = useRef([]);
+inputsRef: This creates a useRef hook that initializes with an empty array. useRef is a way to persist values across renders without causing a re-render.
+Assigning the Reference
+
+
+ref={(el) => inputsRef.current[index] = el}
+el: This is the DOM element reference of the input box being rendered.
+inputsRef.current[index]: We are using the current property of the useRef object to store the reference to the input element at the specific index.
+Detailed Steps
+Rendering Each Input Element
+
+When the component renders, it iterates over an array of length 4 (for a 4-digit OTP).
+
+{[...Array(length)].map((_, index) => (
+  <input
+    key={index}
+    type="text"
+    maxLength="1"
+    value={otp[index]}
+    onChange={(e) => handleChange(e.target, index)}
+    onFocus={(e) => e.target.select()}
+    ref={(el) => inputsRef.current[index] = el}
+  />
+))}
+Assigning the Reference
+
+For each input element, the ref callback is called with the DOM element (el) as an argument.
+This assigns el to inputsRef.current[index].
+For example, for the first input box (index 0):
+
+
+ref={(el) => inputsRef.current[0] = el}
+inputsRef.current[0] now holds a reference to the first input element.
+Accessing the References
+
+Later, when you need to focus an input element programmatically (e.g., after typing a digit), you can use inputsRef.current to access the DOM elements.
+
+// Move to the next input if value is entered
+if (value && index < length - 1) {
+  inputsRef.current[index + 1].focus();
+}
+If the current input box has a value and it's not the last input, move the focus to the next input box.
+Visual Example
+Initial Render
+
+inputsRef.current: [undefined, undefined, undefined, undefined]
+After First Render
+
+Suppose the input elements are rendered with their respective ref callbacks:
+
+
+ref={(el) => inputsRef.current[0] = el} // First input
+ref={(el) => inputsRef.current[1] = el} // Second input
+ref={(el) => inputsRef.current[2] = el} // Third input
+ref={(el) => inputsRef.current[3] = el} // Fourth input
+inputsRef.current: [<input_0>, <input_1>, <input_2>, <input_3>]
+
+Here, <input_0> is the reference to the first input element, <input_1> to the second, and so on.
