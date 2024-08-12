@@ -125,8 +125,12 @@ const EditProduct = () => {
             <option value="" disabled>
               Select category
             </option>
-            <option value="course">Course</option>
-            <option value="template">Template</option>
+            <option value="camera">Camera</option>
+            <option value="smartphones">Smartphones</option>
+            <option value="clothes">Clothes</option>
+            <option value="laptop">Laptop</option>
+            <option value="gadgets">Gadgets</option>
+            <option value="grocery">Groceries</option>
           </select>
 
           <button

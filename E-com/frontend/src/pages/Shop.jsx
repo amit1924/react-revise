@@ -54,8 +54,12 @@ const Shop = () => {
             className="select select-bordered w-full max-w-xs"
           >
             <option value="">All</option>
-            <option value="course">Courses</option>
-            <option value="template">Templates</option>
+            <option value="camera">Camera</option>
+            <option value="smartphones">Smartphones</option>
+            <option value="clothes">Clothes</option>
+            <option value="laptop">Laptop</option>
+            <option value="gadgets">Gadgets</option>
+            <option value="grocery">Groceries</option>
           </select>
         </div>
       </div>
