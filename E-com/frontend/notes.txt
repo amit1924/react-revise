@@ -1,0 +1,10 @@
+Meaning of * in the Route Path
+Wildcard Match:
+
+The * acts as a wildcard, meaning that this route will match any URL that starts with /admin/ followed by any additional segments. For example, it would match:
+/admin/
+/admin/product
+/admin/product/edit/123
+/admin/user/settings
+
+////////////////////////////////////////////////////////////////////
