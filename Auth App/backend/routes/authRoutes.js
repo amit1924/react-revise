@@ -8,7 +8,7 @@ const JWT_SECRET = "secretkey1234";
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const userExist = await userModel.findOne({ email });
     if (userExist) {
@@ -19,6 +19,7 @@ router.post("/register", async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      role: role || "user",
     });
 
     await user.save();
@@ -27,6 +28,18 @@ router.post("/register", async (req, res) => {
     return res.status(500).json({ message: "User registration failed" });
   }
 });
+
+// Role middleware
+const verifyRole = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .json({ message: "Access forbidden: unauthporized" });
+    }
+    next();
+  };
+};
 
 router.post("/login", async (req, res) => {
   try {
@@ -44,12 +57,16 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: userExist._id }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: userExist._id, role: userExist.role },
+      JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     // Return token if login is successful
-    return res.status(200).json({ token: token, success: true });
+    return res.status(200).json({ token: token, role: userExist.role });
   } catch (error) {
     return res.status(500).json({ message: "User login failed" });
   }
@@ -77,6 +94,14 @@ const verifyToken = async (req, res, next) => {
     res.status(401).json({ message: "Invalid or expired token" });
   }
 };
+//  role based routes
+router.get("/admin", verifyToken, verifyRole(["admin"]), (req, res) => {
+  res.status(200).json({ message: "Welcome Admin!" });
+});
+
+router.get("/user", verifyToken, verifyRole(["user", "admin"]), (req, res) => {
+  res.status(200).json({ message: "Welcome User!" });
+});
 
 router.get("/home", verifyToken, async (req, res) => {
   try {
@@ -85,9 +110,10 @@ router.get("/home", verifyToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res
-      .status(200)
-      .json({ message: "Token is valid", user: { username: user.username } });
+    res.status(200).json({
+      message: "Token is valid",
+      user: { username: user.username, role: user.role },
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching user data" });
   }

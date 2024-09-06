@@ -21,10 +21,11 @@ const Login = () => {
         "http://localhost:3000/auth/login",
         formData
       );
-      const token = res.data.token;
+      const { token, role } = res.data;
       console.log("token", token);
       if (res.status === 200) {
         localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
         navigate("/");
       }
     } catch (error) {
